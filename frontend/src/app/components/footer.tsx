@@ -7,7 +7,7 @@ const Footer = () => {
             <div className='p-3 font-nico text-blue-600 text-[24px]'>LookStock</div>
             <div className='p-3 flex justify-between text-[16px]'>
                 <p>
-                Eficiencia y control: tu aliado confiable en gestión de inventarios.
+                    Eficiencia y control: tu aliado confiable en gestión de inventarios.
                 </p>
                 <a href="">Github</a>
             </div>

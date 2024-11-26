@@ -10,8 +10,8 @@ const Inventory = () => {
         { id: 4, name: 'Sombrero', category: 'Accesorios', quantity: 10, price: '$20' },
     ];
     return(
-        <div className="flex-1 bg-white">
-        <h1 className="text-3xl font-bold mb-6 text-blue-500">Dashboard - Inventario</h1>
+        <div className="flex-1 bg-white p-10">
+        <h1 className="text-3xl font-bold mb-6 text-black text-center">Inventario</h1>
         <div className="overflow-x-auto">
           <table className="table-auto w-full bg-white shadow-md rounded-lg">
             <thead className="bg-blue-500 text-white">
