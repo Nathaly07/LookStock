@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Header from "./components/header";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,8 +23,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es">
       <body className="bg-gray-100">
-        <header className="p-4 bg-blue-500 text-white">Mi Inventario</header>
-        <main className="p-6">{children}</main>
+        <div>
+          <Header/> 
+        </div>
+        <main>{children}</main>
       </body>
     </html>
   );
