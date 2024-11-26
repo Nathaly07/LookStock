@@ -19,7 +19,7 @@ export class AuthService {
     }
   }
 
-  async validateToken(token: string): Promise<any> {
+  async validateToken(token: string): Promise<{ uid: string }> {
     try {
       const decoded = await admin.auth().verifyIdToken(token);
       return { uid: decoded.uid };
@@ -28,3 +28,4 @@ export class AuthService {
     }
   }
 }
+

@@ -8,6 +8,8 @@ import {
 import { Server, Socket } from 'socket.io';
 import { AuthService } from '../auth/auth.service';
 import { ChatService } from './chat.service';
+import { EncryptionService } from '../utils/encryption.service';
+
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -19,6 +21,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private readonly authService: AuthService,
     private readonly chatService: ChatService,
+    private readonly encryptionService: EncryptionService,
+
   ) {}
 
   async handleConnection(client: Socket) {
@@ -26,9 +30,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const token = client.handshake.query.token as string;
       if (!token) throw new Error('Token no proporcionado');
 
-      const uid = await this.authService.validateToken(token);
+      const { uid } = await this.authService.validateToken(token);
       this.connectedUsers.set(client.id, uid);
+
+      // Enviar historial de mensajes al cliente conectado
+      const chatHistory = await this.chatService.getChatHistory();
+      client.emit('loadMessages', chatHistory);
     } catch (error) {
+      console.error('Error en la conexión:', error.message);
       client.disconnect();
     }
   }
@@ -47,10 +56,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     const message = await this.chatService.saveMessage(uid, payload.message);
 
+    // Emitir el mensaje nuevo a todos los clientes conectados
     this.server.emit('receiveMessage', {
-      name: message.employee.name,
-      message: await this.chatService.getChatHistory(),
+      name: message.employees.name,
+      message: this.encryptionService.decryptData(message.message),
       timestamp: message.timestamp,
     });
   }
 }
+

@@ -1,18 +1,26 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common';
+import { AuthService } from '../auth/auth.service';
 import { EmployeeService } from './employee.service';
 
-@Controller('employees')
+@Controller('auth')
 export class EmployeeController {
-  constructor(private readonly employeeService: EmployeeService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly employeeService: EmployeeService,
+  ) {}
 
   @Post('register')
-  async register(@Body() employeeData: any) {
-    const { uid, ...data } = employeeData;
+  async register(@Body() body: any) {
+    const { token, ...data } = body;
+    const { uid } = await this.authService.validateToken(token);
     return await this.employeeService.registerEmployee(uid, data);
   }
 
-  @Get(':uid')
-  async getEmployee(@Param('uid') uid: string) {
+  @Post('login')
+  async login(@Body('token') token: string) {
+    const { uid } = await this.authService.validateToken(token);
+
     return await this.employeeService.getEmployeeByUid(uid);
   }
 }
+
