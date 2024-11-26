@@ -1,43 +1,56 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React, { useEffect } from "react";
+import { useAuth } from "../../context/authContext";
+import { useRouter } from "next/navigation";
 
 const Dashboard = () => {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+  }, [user, router]);
+
   // Datos de prueba
   const inventoryData = [
-    { id: 1, name: 'Camisa', category: 'Ropa', quantity: 25, price: '$15' },
-    { id: 2, name: 'Pantalón', category: 'Ropa', quantity: 30, price: '$25' },
-    { id: 3, name: 'Zapatos', category: 'Calzado', quantity: 15, price: '$45' },
-    { id: 4, name: 'Sombrero', category: 'Accesorios', quantity: 10, price: '$20' },
+    { id: 1, name: "Camisa", category: "Ropa", quantity: 25, price: "$15" },
+    { id: 2, name: "Pantalón", category: "Ropa", quantity: 30, price: "$25" },
+    { id: 3, name: "Zapatos", category: "Calzado", quantity: 15, price: "$45" },
+    { id: 4, name: "Sombrero", category: "Accesorios", quantity: 10, price: "$20" },
   ];
 
+  if (!user) {
+    return <p>Loading...</p>;
+  }
+
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold mb-6 text-blue-500">Dashboard - Inventario</h1>
-      <div className="overflow-x-auto">
-        <table className="table-auto w-full bg-white shadow-md rounded-lg">
-          <thead className="bg-blue-500 text-white">
-            <tr>
-              <th className="px-4 py-2">ID</th>
-              <th className="px-4 py-2">Nombre</th>
-              <th className="px-4 py-2">Categoría</th>
-              <th className="px-4 py-2">Cantidad</th>
-              <th className="px-4 py-2">Precio</th>
+    <div>
+      <h1>Dashboard - Inventario</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Cantidad</th>
+            <th>Precio</th>
+          </tr>
+        </thead>
+        <tbody>
+          {inventoryData.map((item) => (
+            <tr key={item.id}>
+              <td>{item.id}</td>
+              <td>{item.name}</td>
+              <td>{item.category}</td>
+              <td>{item.quantity}</td>
+              <td>{item.price}</td>
             </tr>
-          </thead>
-          <tbody>
-            {inventoryData.map((item) => (
-              <tr key={item.id} className="text-center border-b">
-                <td className="px-4 py-2">{item.id}</td>
-                <td className="px-4 py-2">{item.name}</td>
-                <td className="px-4 py-2">{item.category}</td>
-                <td className="px-4 py-2">{item.quantity}</td>
-                <td className="px-4 py-2">{item.price}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
