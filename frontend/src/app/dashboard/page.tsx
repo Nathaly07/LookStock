@@ -9,9 +9,18 @@ import Footer from '../components/footer';
 
 const Dashboard = () => {
 
+  const { user } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!user) {
+      router.push("/login");
+    }
+  }, [user, router]);
+
   if (!user) {
     return <p>Loading...</p>;
-  }
+  };
 
   return (
     <div className="m-0 p-0 bg-gray-100">
