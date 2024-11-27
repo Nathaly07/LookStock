@@ -124,17 +124,25 @@ const AddProduct = ({ onClose, refreshProducts, productToEdit }: AddProductProps
           </div>
 
           <div className="mb-4">
-            <label htmlFor="stock" className="block text-gray-700">Stock</label>
-            <input
-              type="number"
-              id="stock"
-              name="stock"
-              value={formData.stock}
-              onChange={handleChange}
-              className="border border-gray-300 p-2 w-full rounded mt-2"
-              placeholder="Ejemplo: 10"
-            />
-          </div>
+          <label htmlFor="stock" className="block text-gray-700">Stock</label>
+          <input
+            type="number"
+            id="stock"
+            name="stock"
+            value={formData.stock}
+            onChange={(e) => {
+              // Solo permite números positivos
+              const value = e.target.value;
+              // Si es un número positivo o vacío (para permitir borrar), actualiza el estado
+              if (/^\d+$/.test(value) || value === '') {
+                handleChange(e);
+              }
+            }}
+            className="border border-gray-300 p-2 w-full rounded mt-2"
+            placeholder="Ejemplo: 10"
+            min="1" // Asegura que el valor mínimo sea 1
+          />
+        </div>
 
           <div className="mb-4">
             <label htmlFor="image" className="block text-gray-700">URL de la Imagen</label>

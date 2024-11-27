@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/inventory-logs',
+  baseURL: 'http://localhost:4000/inventory-logs',
 });
 
 export const getAllStock = async () => {
