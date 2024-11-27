@@ -84,6 +84,15 @@ const Login = () => {
             Regístrate
           </span>
         </p>
+        <p className="text-sm mt-2">
+          ¿Olvidaste tu contraseña?{" "}
+          <span
+            onClick={() => router.push("/reset-password")}
+            className="text-blue-500 hover:underline cursor-pointer"
+          >
+            Restablecer Contraseña
+          </span>
+        </p>
       </form>
     </div>
   );
