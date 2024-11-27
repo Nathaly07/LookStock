@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { auth } from "../firebaseConfig.cjs";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -10,13 +11,42 @@ const Login = () => {
   const [error, setError] = useState("");
   const router = useRouter();
 
-  const handleLogin = async (e) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push("/dashboard"); // Redirige al dashboard tras iniciar sesión
-    } catch (error) {
-      setError(error.message);
+      // Autenticación con Firebase
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Obtener el token de Firebase
+      const token = await user.getIdToken();
+
+      // Validación del empleado en el backend
+      const response = await fetch("http://localhost:4000/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token }),
+      });
+
+      if (response.ok) {
+        const { employee } = await response.json();
+
+        // Guardar token y datos del empleado en localStorage
+        localStorage.setItem("firebaseToken", token);
+        localStorage.setItem("employee", JSON.stringify(employee));
+
+        console.log("Empleado autenticado:", employee);
+
+        // Redirigir al dashboard o página correspondiente
+        router.push("/dashboard");
+      } else {
+        // Manejo de errores del backend
+        const errorData = await response.json();
+        setError(errorData.message || "Error al validar usuario");
+      }
+    } catch (err: any) {
+      // Manejo de errores de Firebase o red
+      setError(err.message);
     }
   };
 
@@ -41,10 +71,19 @@ const Login = () => {
         {error && <p className="text-red-500">{error}</p>}
         <button
           type="submit"
-          className="bg-blue-500 text-white p-2 rounded w-full"
+          className="bg-blue-500 text-white p-2 rounded w-full mb-4"
         >
           Iniciar Sesión
         </button>
+        <p className="text-sm">
+          ¿No tienes una cuenta?{" "}
+          <span
+            onClick={() => router.push("/signup")}
+            className="text-blue-500 hover:underline cursor-pointer"
+          >
+            Regístrate
+          </span>
+        </p>
       </form>
     </div>
   );
