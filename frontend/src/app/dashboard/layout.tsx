@@ -6,18 +6,18 @@ import Sidebar from "../components/sidebar";
 import Footer from "../components/footer";
 
  export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-    const { user } = useAuth();
-    const router = useRouter();
+    // const { user } = useAuth();
+    // const router = useRouter();
 
-    useEffect(() => {
-      if (!user) {
-        router.push("/login");
-      }
-    }, [user, router]);
+    // useEffect(() => {
+    //   if (!user) {
+    //     router.push("/login");
+    //   }
+    // }, [user, router]);
 
-    if (!user) {
-      return <p>Loading...</p>;
-    };
+    // if (!user) {
+    //   return <p>Loading...</p>;
+    // };
 
     return (
         <div className="m-0 p-0 bg-gray-100">
