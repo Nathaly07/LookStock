@@ -1,9 +1,11 @@
-"use client";
+'use client';
 import React, { useEffect, useState } from 'react';
-import { getAllProducts } from '../api/apiProducts';
+import { getAllProducts , deleteProduct} from '../api/apiProducts';
 import Modal from './Modal';
-import AddProduct from './AddProduct';
+import AddProduct from './ProductForm';
 import Image from 'next/image';
+import ConfirmDeleteModal from './DeleteProduct';
+
 
 interface Product {
   id: string;
@@ -16,19 +18,22 @@ interface Product {
 }
 
 const Inventory = () => {
-  const [inventoryData, setInventoryData] = useState<Product[]>([]); // Todos los productos
-  const [filteredData, setFilteredData] = useState<Product[]>([]); // Datos filtrados
-  const [searchQuery, setSearchQuery] = useState<string>(''); // Query de búsqueda
+  const [inventoryData, setInventoryData] = useState<Product[]>([]);
+  const [filteredData, setFilteredData] = useState<Product[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [productToEdit, setProductToEdit] = useState<Product | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<Product | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const products = await getAllProducts();
         setInventoryData(products);
-        setFilteredData(products); // Inicialmente muestra todos los productos
+        setFilteredData(products);
       } catch (err) {
         setError('Error al cargar los datos del inventario.');
         console.error(err);
@@ -39,35 +44,56 @@ const Inventory = () => {
     fetchData();
   }, []);
 
-  // Filtra los datos cuando el usuario escribe en la barra de búsqueda
   useEffect(() => {
     if (searchQuery.trim() === '') {
-      setFilteredData(inventoryData); // Si no hay query, muestra todos los productos
+      setFilteredData(inventoryData);
     } else {
       const query = searchQuery.toLowerCase();
       const filtered = inventoryData.filter((product) =>
-        product.name.toLowerCase().includes(query) ||
-        product.category.toLowerCase().includes(query)
+        product.name.toLowerCase().includes(query) || product.category.toLowerCase().includes(query)
       );
       setFilteredData(filtered);
     }
   }, [searchQuery, inventoryData]);
 
-  // Maneja el cambio en la barra de búsqueda
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
   const handleAddProduct = () => {
+    setProductToEdit(null); // Aseguramos que no hay un producto en edición al abrir el modal para agregar
     setIsModalOpen(true);
   };
 
+  const handleEditProduct = (product: Product) => {
+    setProductToEdit(product); // Establecemos el producto a editar
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteProduct = (product: Product) => {
+    setProductToDelete(product);
+    setIsDeleteModalOpen(true); // Abre la ventana de confirmación
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!productToDelete) return;
+
+    try {
+      await deleteProduct(productToDelete.id); // Llamamos a la API para eliminar el producto
+      setIsDeleteModalOpen(false); // Cierra el modal de confirmación
+      refreshProducts(); // Actualizamos la lista de productos
+    } catch (err) {
+      console.error('Error al eliminar el producto', err);
+      setError('Hubo un error al eliminar el producto.');
+    }
+  };
+
   const closeModal = () => {
-    setIsModalOpen(false); // Cierra el modal
+    setIsModalOpen(false);
+    setIsDeleteModalOpen(false);
   };
 
   const refreshProducts = async () => {
-    // Recarga los productos desde el backend para actualizar la lista
     const products = await getAllProducts();
     setInventoryData(products);
     setFilteredData(products);
@@ -85,7 +111,6 @@ const Inventory = () => {
     <div className="flex-1 bg-white p-10">
       <h1 className="text-3xl font-bold mb-6 text-black text-center">Inventario</h1>
 
-      {/* Barra de búsqueda y botón agregar producto */}
       <div className="flex items-center justify-between mb-4">
         <input
           type="text"
@@ -102,7 +127,6 @@ const Inventory = () => {
         </button>
       </div>
 
-      {/* Tabla de productos */}
       <div className="overflow-x-auto">
         <table className="table-auto w-full bg-white shadow-md rounded-lg">
           <thead className="bg-blue-500 text-white">
@@ -112,41 +136,59 @@ const Inventory = () => {
               <th className="px-4 py-2">Precio</th>
               <th className="px-4 py-2">Stock</th>
               <th className="px-4 py-2">Imagen</th>
-              <th className="px-4 py-2">Fecha Añadida</th>
-              <th className="px-4 py-2">Opciones</th>
+              <th className="px-4 py-2">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((item) => (
-              <tr key={item.id} className="text-center border-b">
-                <td className="px-4 py-2">{item.name}</td>
-                <td className="px-4 py-2">{item.category}</td>
-                <td className="px-4 py-2">{item.price}</td>
-                <td className="px-4 py-2">{item.stock}</td>
-                <td className="px-4 py-2">
-                  <img
-                    src={item.image}
-                    alt={item.name}
+            {filteredData.map((product) => (
+              <tr key={product.id}>
+                <td className="border px-4 py-2">{product.name}</td>
+                <td className="border px-4 py-2">{product.category}</td>
+                <td className="border px-4 py-2">{product.price}</td>
+                <td className="border px-4 py-2">{product.stock}</td>
+                <td className="border px-4 py-2">
+                <img
+                    src={product.image}
+                    alt={product.name}
                     className="h-16 w-16 object-cover mx-auto"
                   />
                 </td>
-                <td className="px-4 py-2">{new Date(item.addedDate).toLocaleDateString()}</td>
-                <td className="px-4 py-8 flex justify-center items-center space-x-4 w-full">
-                  <button>
-                  <img src="../icons/Edit.svg" alt="Editar" />
-                  </button>
-                  <button>
-                  <img src="../icons/Delete.svg" alt="Eliminar" />
-                  </button>
+                <td className="border px-4 py-2">
+                <div className="flex justify-center items-center space-x-4 w-full">
+                  <button
+                      onClick={() => handleEditProduct(product)}
+                      className="bg-blue-400 text-white px-4 py-2 rounded-xl hover:bg-blue-200"
+                    >
+                      <img src="../icons/Edit.svg" alt="Editar" />
+                    </button>
+
+                    <button onClick={() => handleDeleteProduct(product)}
+                      className="bg-blue-400 text-white px-4 py-2 rounded-xl hover:bg-blue-200"
+                    >
+                       <img src="../icons/Delete.svg" alt="Eliminar" />
+                    </button>
+                </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <AddProduct onClose={closeModal} refreshProducts={refreshProducts}></AddProduct>
-      </Modal>
+
+      {isModalOpen && (
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <AddProduct onClose={closeModal} refreshProducts={refreshProducts} productToEdit={productToEdit} />
+        </Modal>
+      )}
+
+      {isDeleteModalOpen && (
+        <ConfirmDeleteModal
+          isOpen={isDeleteModalOpen}
+          onClose={closeModal}
+          onConfirm={handleConfirmDelete}
+          productName={productToDelete?.name || ''}
+        />
+      )}
     </div>
   );
 };
