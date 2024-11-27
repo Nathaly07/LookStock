@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 const Header = () => {
   const router = useRouter();
+  const pathname = usePathname(); // Obtén la ruta actual
 
   const handleLogout = () => {
     // Eliminar el token del localStorage
@@ -26,16 +27,18 @@ const Header = () => {
           />
           <span className="ml-4">LookStock</span>
         </div>
-        <button
-          onClick={handleLogout} // Llama a la función de cerrar sesión
-          className="px-4 py-2 text-blue-600 border border-blue-600 rounded-lg bg-white hover:bg-blue-600 hover:text-white transition-all"
-        >
-          Cerrar Sesión
-        </button>
+        {/* Ocultar el botón si la ruta es /login o /signup */}
+        {pathname !== "/login" && pathname !== "/signup" && (
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 text-blue-600 border border-blue-600 rounded-lg bg-white hover:bg-blue-600 hover:text-white transition-all"
+          >
+            Cerrar Sesión
+          </button>
+        )}
       </div>
     </header>
   );
 };
 
 export default Header;
-
