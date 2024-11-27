@@ -86,30 +86,42 @@ const AddProduct = ({ onClose, refreshProducts, productToEdit }: AddProductProps
         <form onSubmit={handleSubmit}>
           {/* Los campos del formulario siguen siendo los mismos */}
           <div className="mb-4">
-            <label htmlFor="name" className="block text-gray-700">Nombre del Producto</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className="border border-gray-300 p-2 w-full rounded mt-2"
-              placeholder="Ejemplo: Vestido de verano"
-            />
-          </div>
-          <div className="mb-4">
+          <label htmlFor="name" className="block text-gray-700">Nombre del Producto</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={(e) => {
+              // Expresión regular para permitir solo letras y espacios
+              const value = e.target.value;
+              if (/^[A-Za-z\s]*$/.test(value) || value === '') {
+                handleChange(e);
+              }
+            }}
+            className="border border-gray-300 p-2 w-full rounded mt-2"
+            placeholder="Ejemplo: Vestido de verano"
+          />
+        </div>
+
+            <div className="mb-4">
             <label htmlFor="category" className="block text-gray-700">Categoría</label>
             <input
               type="text"
               id="category"
               name="category"
               value={formData.category}
-              onChange={handleChange}
+              onChange={(e) => {
+                // Expresión regular para permitir solo letras y espacios
+                const value = e.target.value;
+                if (/^[A-Za-z\s]*$/.test(value) || value === '') {
+                  handleChange(e);
+                }
+              }}
               className="border border-gray-300 p-2 w-full rounded mt-2"
               placeholder="Ejemplo: Vestido"
             />
           </div>
-
           <div className="mb-4">
             <label htmlFor="price" className="block text-gray-700">Precio</label>
             <input
@@ -117,12 +129,18 @@ const AddProduct = ({ onClose, refreshProducts, productToEdit }: AddProductProps
               id="price"
               name="price"
               value={formData.price}
-              onChange={handleChange}
+              onChange={(e) => {
+                // Expresión regular para validar números positivos con decimales
+                const value = e.target.value;
+                // Permite ingresar números positivos con decimales (ej: 899.99, 10)
+                if (/^\d*\.?\d+$/.test(value) || value === '') {
+                  handleChange(e);
+                }
+              }}
               className="border border-gray-300 p-2 w-full rounded mt-2"
               placeholder="Ejemplo: 899.99"
             />
           </div>
-
           <div className="mb-4">
           <label htmlFor="stock" className="block text-gray-700">Stock</label>
           <input
