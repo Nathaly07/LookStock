@@ -12,6 +12,7 @@ const SignUp = () => {
   const [phone, setPhone] = useState("");
   const [role, setRole] = useState("");
   const [error, setError] = useState("");
+  const [showModal, setShowModal] = useState(false); // Estado para el modal
   const router = useRouter();
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -34,8 +35,7 @@ const SignUp = () => {
       });
 
       if (response.ok) {
-        alert("Registro exitoso");
-        router.push("/login"); // Redirige al login tras registrarse
+        setShowModal(true); // Mostrar el modal
       } else {
         const errorData = await response.json();
         setError(errorData.message || "Error en el registro");
@@ -43,6 +43,11 @@ const SignUp = () => {
     } catch (err: any) {
       setError(err.message);
     }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    router.push("/login"); // Redirigir al login tras cerrar el modal
   };
 
   return (
@@ -101,6 +106,22 @@ const SignUp = () => {
           </span>
         </p>
       </form>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded shadow-md max-w-sm text-center">
+            <h2 className="text-xl font-bold mb-4">¡Registro exitoso!</h2>
+            <p className="mb-4">Tu cuenta ha sido creada con éxito. Puedes iniciar sesión ahora.</p>
+            <button
+              onClick={closeModal}
+              className="bg-blue-500 text-white p-2 rounded w-full"
+            >
+              Ir al login
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
