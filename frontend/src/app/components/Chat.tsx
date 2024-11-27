@@ -1,57 +1,88 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { io } from "socket.io-client";
+
+interface Message {
+  name: string;
+  message: string;
+  timestamp: string;
+}
 
 const Chat = () => {
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([
-    { id: 1, text: "Hola, ¿cómo estás?", sender: "usuario2", time: "10:00 AM" },
-    { id: 2, text: "¡Hola! Estoy bien, gracias. ¿Y tú?", sender: "usuario1", time: "10:01 AM" },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const token = typeof window !== "undefined" ? localStorage.getItem("firebaseToken") : "";
+  const employee = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("employee") || "{}") : {};
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (message.trim()) {
-      const newMessage = {
-        id: messages.length + 1,
-        text: message,
-        sender: "usuario1",
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      };
-      setMessages([...messages, newMessage]);
-      setMessage("");
+  useEffect(() => {
+    if (!token) {
+      console.error("Token no encontrado. Por favor inicia sesión.");
+      return;
     }
+
+    // Conexión al servidor WebSocket
+    const socket = io("http://localhost:4000", {
+      query: { token }, // Enviar token como query para autenticación
+    });
+
+    // Cargar historial de mensajes al abrir el chat
+    socket.on("loadMessages", (data: Message[]) => {
+      console.log("Mensajes cargados:", data);
+      setMessages(data); // Actualizar el estado con el historial
+    });
+
+    // Escuchar nuevos mensajes
+    socket.on("receiveMessage", (data: Message) => {
+      console.log("Nuevo mensaje recibido:", data);
+      setMessages((prev) => [...prev, data]); // Añadir el nuevo mensaje al estado
+    });
+
+    return () => {
+      socket.disconnect(); // Desconectar el socket al desmontar el componente
+    };
+  }, [token]);
+
+  const sendMessage = () => {
+    if (!message.trim()) return; // Evitar enviar mensajes vacíos
+
+    const socket = io("http://localhost:4000", {
+      query: { token },
+    });
+
+    // Emitir el mensaje al servidor
+    socket.emit("sendMessage", {
+      name: employee.name, // Nombre del usuario actual
+      message,
+      timestamp: new Date().toISOString(), // Fecha actual
+    });
+
+    setMessage(""); // Limpiar el campo de entrada
   };
 
   return (
-    <div className="flex flex-col h-full max-w-4xl mx-auto p-4 border rounded-lg bg-gray-100">
-      <h2 className="text-xl font-bold mb-4">Chat</h2>
-      <div className="flex-1 overflow-y-scroll mb-4 p-2 border rounded-lg bg-white">
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`p-2 my-2 rounded-lg ${
-              msg.sender === "usuario1" ? "bg-[#5570F1] text-white text-right" : "bg-transparent text-left border border-gray-300"
-            }`}
-          >
-            <p className="font-bold">{msg.sender}</p>
-            <p>{msg.text}</p>
-            <p className="text-xs text-gray-500">{msg.time}</p>
-          </div>
-        ))}
-      </div>
-      <form onSubmit={handleSubmit} className="flex">
+    <div className="flex flex-col items-center min-h-screen">
+      <div className="w-full max-w-lg p-4 bg-white rounded shadow-md">
+        <h1 className="text-2xl mb-4">Chat</h1>
+        <div className="mb-4 h-64 overflow-y-auto border rounded p-2">
+          {messages.map((msg, idx) => (
+            <div key={idx} className="mb-2">
+              <strong>{msg.name}:</strong> {msg.message}{" "}
+              <span className="text-xs text-gray-500">{new Date(msg.timestamp).toLocaleString()}</span>
+            </div>
+          ))}
+        </div>
         <input
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Escribe un mensaje..."
-          className="flex-1 p-2 border rounded-l-lg"
+          placeholder="Escribe un mensaje"
+          className="mb-2 p-2 border rounded w-full"
         />
-        <button type="submit" className="p-2 bg-blue-500 text-white rounded-r-lg">
+        <button onClick={sendMessage} className="bg-blue-500 text-white p-2 rounded w-full">
           Enviar
         </button>
-      </form>
+      </div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/products', // Cambia la URL según tu configuración
+  baseURL: 'http://localhost:4000/products', // Cambia la URL según tu configuración
 });
 
 // Obtener todos los productos
