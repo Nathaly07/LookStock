@@ -1,31 +1,30 @@
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: 'http://localhost:4000/inventory-logs',
-});
+const BASE_URL = 'http://localhost:4000/inventory-logs';
 
-export const getAllStock = async () => {
+export const getLogs = async () => {
   try {
-    const response = await api.get('/');
+    const response = await axios.get(BASE_URL);
     return response.data;
   } catch (error) {
-    console.error('Error fetching stock data:', error);
+    console.error('Error fetching logs:', error);
     throw error;
   }
 };
 
-export const createStock = async (stockData: {
+
+export const createLog = async (logData: {
   productId: string;
   employeeId: string;
   type: string;
   quantityChange: number;
-  comment?: string;
+  comment: string;
 }) => {
   try {
-    const response = await api.post('/', stockData);
+    const response = await axios.post(BASE_URL, logData);
     return response.data;
   } catch (error) {
-    console.error('Error creating stock entry:', error);
+    console.error('Error creating log:', error);
     throw error;
   }
 };

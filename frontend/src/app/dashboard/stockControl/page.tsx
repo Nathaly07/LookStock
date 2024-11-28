@@ -1,11 +1,11 @@
 "use Client";
-import StockControl from "@/app/components/stock";
+import LogsTable from "@/app/components/Log";
 import React from "react";
 
 const StockControlPage = () => {
 
     return(
-        <div><StockControl/></div>
+        <div><LogsTable/></div>
     )
 }
 

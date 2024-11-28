@@ -52,51 +52,66 @@ const SignUp = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <form onSubmit={handleSignUp} className="bg-white p-6 rounded shadow-md">
-        <h1 className="text-2xl mb-4">Comenzar con LookStock</h1>
+    <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
+        <div className="text-blue-600 flex items-center justify-center">
+          <img
+            src="../lookStock-icon.png"
+            alt="LookStock"
+            width={80}
+            height={80}
+          />
+        </div>
+      <div className="text-center mb-1 mt-3 flex justify-center">
+        <h1 className="text-2xl font-bold">Comenzar con </h1>
+        <h1 className="text-2xl font-bold text-blue-500 px-1"> LookStock</h1>
+      </div>
+      <div className="text-center mb-5 text-lg text-gray-600">
+        <h2>Crea una nueva cuenta</h2>
+      </div>
+      <form onSubmit={handleSignUp} className="flex flex-col space-y-3">
         <input
           type="text"
           placeholder="Nombre"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="mb-2 p-2 border rounded w-full"
+          className="p-2 border rounded"
         />
         <input
           type="text"
           placeholder="Teléfono"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          className="mb-2 p-2 border rounded w-full"
+          className="p-2 border rounded"
         />
         <input
           type="text"
           placeholder="Rol"
           value={role}
           onChange={(e) => setRole(e.target.value)}
-          className="mb-2 p-2 border rounded w-full"
+          className="p-2 border rounded"
         />
         <input
           type="email"
           placeholder="Correo Electrónico"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mb-2 p-2 border rounded w-full"
+          className="p-2 border rounded"
         />
         <input
           type="password"
           placeholder="Contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mb-2 p-2 border rounded w-full"
+          className="p-2 border rounded"
         />
         {error && <p className="text-red-500">{error}</p>}
         <button
           type="submit"
-          className="bg-blue-500 text-white p-2 rounded w-full mb-4"
+          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
         >
           Registrarse
         </button>
-        <p className="text-sm">
+        <p className="text-sm text-center">
           ¿Ya tienes una cuenta?{" "}
           <span
             onClick={() => router.push("/login")}
@@ -106,7 +121,7 @@ const SignUp = () => {
           </span>
         </p>
       </form>
-
+    </div>
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">

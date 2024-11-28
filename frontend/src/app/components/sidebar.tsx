@@ -5,7 +5,7 @@ import Image from 'next/image';
 
 const navLinkd= [
     {href: '/dashboard/', label: 'Inventario',   icon: '../icons/Folder.svg'},
-    // {href: '/dashboard/stockControl', label: 'Stock Control',   icon: '../icons/Bag.svg'},
+    {href: '/dashboard/stockControl', label: 'Stock Control',   icon: '../icons/Bag.svg'},
     {href: '/dashboard/chat', label: 'Chat',   icon: '../icons/Chat.svg'}
 ];
 const Sidebar = () => {
