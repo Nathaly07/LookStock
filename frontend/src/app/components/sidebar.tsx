@@ -10,7 +10,7 @@ const navLinkd= [
 ];
 const Sidebar = () => {
     return(
-        <div className="relative w-[91px] h-[100vh] bg-white items-center justify-center flex-col p-0">
+        <div className="relative w-[91px] h-[100vh] bg-white items-center justify-center flex-col p-0 font-montserrat">
         <nav className="flex-grow flex flex-col justify-center items-center">
             <ul className="list-none p-4 space-y-4">
             {navLinkd.map((link, index) => (

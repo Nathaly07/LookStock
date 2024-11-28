@@ -64,7 +64,7 @@ const LogsTable = () => {
     };
 
   return (
-    <div className="flex-1 bg-white p-10">
+    <div className="flex-1 bg-white p-10 font-montserrat">
         <h1 className="text-3xl font-bold mb-6 text-black text-center">
             Control de Stock
         </h1>
@@ -75,8 +75,9 @@ const LogsTable = () => {
           className="border border-gray-300 p-2 rounded w-1/2"
         />
         <button onClick={handleAddStock}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition flex"
         >
+          <img src="../icons/fi_plus-circle.svg" alt="Editar" className='mr-1'/>
           Registrar un movimiento
         </button>
       </div>

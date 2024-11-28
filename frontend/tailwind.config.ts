@@ -13,7 +13,8 @@ export default {
         foreground: "var(--foreground)",
       },
       fontFamily: {
-        nico: ['Nico Moji', 'regular']
+        nico: ['"Nico Moji"', 'sans-serif'],
+        montserrat: ['"Montserrat"', 'sans-serif'],
       },
     },
   },

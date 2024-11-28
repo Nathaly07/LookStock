@@ -51,7 +51,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
+    <div className="flex flex-col items-center justify-center min-h-screen font-montserrat">
     <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
         <div className="text-blue-600 flex items-center justify-center">
           <img
@@ -69,26 +69,39 @@ const SignUp = () => {
         <h2>Crea una nueva cuenta</h2>
       </div>
       <form onSubmit={handleSignUp} className="flex flex-col space-y-3">
-        <input
-          type="text"
-          placeholder="Nombre"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="p-2 border rounded"
-        />
+      <input
+        type="text"
+        placeholder="Nombre"
+        value={name}
+        onChange={(e) => {
+          const onlyLetters = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+          setName(onlyLetters);
+        }}
+        className="p-2 border rounded"
+        required
+      />
+
+
         <input
           type="text"
           placeholder="Teléfono"
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
           className="p-2 border rounded"
+          required
+          pattern="\d{1,10}"
         />
         <input
           type="text"
           placeholder="Rol"
           value={role}
-          onChange={(e) => setRole(e.target.value)}
+          onChange={(e) => {
+            // Filtra solo letras y espacios
+            const onlyLetters = e.target.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+            setRole(onlyLetters);
+          }}
           className="p-2 border rounded"
+          required
         />
         <input
           type="email"
@@ -96,6 +109,7 @@ const SignUp = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="p-2 border rounded"
+          required
         />
         <input
           type="password"
@@ -103,8 +117,8 @@ const SignUp = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="p-2 border rounded"
+          required
         />
-        {error && <p className="text-red-500">{error}</p>}
         <button
           type="submit"
           className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600"

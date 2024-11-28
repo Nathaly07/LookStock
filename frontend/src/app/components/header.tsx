@@ -28,10 +28,10 @@ const Header = () => {
           <span className="ml-4">LookStock</span>
         </div>
         {/* Ocultar el botón si la ruta es /login o /signup */}
-        {pathname !== "/login" && pathname !== "/signup" && (
+        {pathname !== "/login" && pathname !== "/signup" && pathname !== "/reset-password" && (
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-blue-600 border border-blue-600 rounded-lg bg-white hover:bg-blue-600 hover:text-white transition-all"
+            className="px-4 py-2 text-blue-600 border border-blue-600 rounded-lg bg-white hover:bg-blue-600 hover:text-white transition-all font-montserrat"
           >
             Cerrar Sesión
           </button>

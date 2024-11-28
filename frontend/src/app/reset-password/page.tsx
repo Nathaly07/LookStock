@@ -24,8 +24,8 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <form onSubmit={handleResetPassword} className="bg-white p-6 rounded shadow-md">
+    <div className="flex flex-col items-center justify-center min-h-screen font-montserrat">
+      <form onSubmit={handleResetPassword} className="bg-white p-6 rounded-xl shadow-md">
         <h1 className="text-2xl mb-4">Restablecer Contraseña</h1>
         <input
           type="email"
@@ -33,9 +33,9 @@ const ResetPassword = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="mb-2 p-2 border rounded w-full"
+          required
         />
         {message && <p className="text-green-500 mb-2">{message}</p>}
-        {error && <p className="text-red-500 mb-2">{error}</p>}
         <button
           type="submit"
           className="bg-blue-500 text-white p-2 rounded w-full mb-4"

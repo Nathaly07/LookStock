@@ -51,49 +51,68 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <form onSubmit={handleLogin} className="bg-white p-6 rounded shadow-md">
-        <h1 className="text-2xl mb-4">Iniciar Sesión</h1>
-        <input
-          type="email"
-          placeholder="Correo Electrónico"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mb-2 p-2 border rounded w-full"
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="mb-2 p-2 border rounded w-full"
-        />
-        {error && <p className="text-red-500">{error}</p>}
-        <button
-          type="submit"
-          className="bg-blue-500 text-white p-2 rounded w-full mb-4"
-        >
-          Iniciar Sesión
-        </button>
-        <p className="text-sm">
-          ¿No tienes una cuenta?{" "}
-          <span
-            onClick={() => router.push("/signup")}
-            className="text-blue-500 hover:underline cursor-pointer"
+    <div className="flex flex-col items-center justify-center min-h-screen font-montserrat">
+      <div className="bg-white p-6 rounded-xl shadow-md max-w-md -mt-24">
+        <div className="text-blue-600 flex items-center justify-center">
+            <img
+              src="../lookStock-icon.png"
+              alt="LookStock"
+              width={80}
+              height={80}
+            />
+          </div>
+        <div className="text-center mb-1 mt-3 flex justify-center">
+          <h1 className="text-2xl font-bold">Bienvenido </h1>
+        </div>
+        <div className="text-center mb-5 text-lg text-gray-600">
+        <h2>Inicia sesión con tu cuenta</h2>
+        </div>
+        <form onSubmit={handleLogin} className="flex flex-col space-y-3" >
+          <input
+            type="email"
+            placeholder="Correo Electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="mb-2 p-2 border rounded w-full"
+            required
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="mb-2 p-2 border rounded w-full"
+            required
+          />
+
+          <button
+            type="submit"
+            className="bg-blue-500 text-white p-2 rounded w-full mb-4"
           >
-            Regístrate
-          </span>
-        </p>
-        <p className="text-sm mt-2">
-          ¿Olvidaste tu contraseña?{" "}
-          <span
-            onClick={() => router.push("/reset-password")}
-            className="text-blue-500 hover:underline cursor-pointer"
-          >
-            Restablecer Contraseña
-          </span>
-        </p>
-      </form>
+            Iniciar Sesión
+          </button>
+        </form>
+        <div className="items-center justify-center text-center mt-5">
+          <p className="text-sm">
+              ¿No tienes una cuenta?{" "}
+              <span
+                onClick={() => router.push("/signup")}
+                className="text-blue-500 hover:underline cursor-pointer"
+              >
+                Regístrate
+              </span>
+            </p>
+            <p className="text-sm mt-2">
+              ¿Olvidaste tu contraseña?{" "}
+              <span
+                onClick={() => router.push("/reset-password")}
+                className="text-blue-500 hover:underline cursor-pointer"
+              >
+                Restablecer Contraseña
+              </span>
+            </p>
+        </div>
+      </div>
     </div>
   );
 };

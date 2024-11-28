@@ -103,7 +103,7 @@ const RegisterForm = ({ onClose, refreshLogs }: AddLogsProps) => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className="flex justify-center items-center h-screen font-montserrat">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4 text-center">Registrar Movimiento</h2>
         <form onSubmit={handleSubmit}>
